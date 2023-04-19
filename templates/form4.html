@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-wrap">
+  <div class="profile"><img src="https://sun9-78.userapi.com/impf/CPuSXkP_ZaZysHbL1oT21nlGQ5vPLJat4azxrg/mj3QX2Za4sI.jpg?size=320x240&quality=96&sign=32c6d6aee7426db174f4f36a516a053d&c_uniq_tag=sS3Qsc1jr6vEWbpflecyzBRaE4QcjQHWrA3KFALSHcE&type=album">
+    <h1>Описание истории</h1>
+  </div>
+  <form method="post">
+    <div>
+      <label for="name">Название истории</label>
+      <input type="text" name="history" required>
+    </div>
+    <div>
+      <label for="text">Описание истории</label>
+      <input type="text" name="opis" required>
+    </div>
+    <button type="submit">Отправить</button>
+  </form>
+</div>
+{% endblock %}

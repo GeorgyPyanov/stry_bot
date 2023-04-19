@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-wrap">
+  <div class="profile"><img src="https://s.mediasole.ru/cache/preview/data/images/2285/2285479/original.jpg">
+    <h1>Регистрация вашей истории</h1>
+  </div>
+  <form method="post">
+    <div>
+      <label for="name">Имя автора</label>
+      <input type="text" name="name" required>
+    </div>
+    <div>
+      <label for="email">Ваш E-mail, на который будет отправлен ответ по модерации</label>
+      <input type="email" name="email" required>
+    </div>
+    <button type="submit">Далее</button>
+  </form>
+</div>
+{% endblock %}
