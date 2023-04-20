@@ -1,4 +1,6 @@
 import logging
+from random import choice
+
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, ReplyKeyboardMarkup, KeyboardButton, \
     ReplyKeyboardRemove
 from telegram.ext import Application, MessageHandler, filters, ContextTypes, CallbackQueryHandler, ConversationHandler
@@ -9,11 +11,23 @@ from mail import anons_history, take_history
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG
 )
-
+cats = ["https://www.yandex.ru/images/search?from=tabbar&img_url=http%3A%2F%2Fimg-fotki.yandex.ru%2Fget%2F9164"
+        "%2F116075328.4d%2F0_d4345_96ec43ee_XL.jpg&lr=11129&pos=3&rpt=simage&text=%D0%BA%D0%BE%D1%82%D0%B8%D0%BA%20%D0%BE"
+        "%D0%B4%D1%83%D0%B2%D0%B0%D0%BD%D1%87%D0%B8%D0%BA%D0%B8",
+        "https://www.yandex.ru/images/search?img_url=http%3A%2F%2Ffunart.pro%2Fuploads%2Fposts%2F2022-06%2F1654196546_17-funart-pro-p-kotik-v-oduvanchikakh-zhivotnie-krasivo-fo-19.jpg&lr=43&pos=10&rpt=simage&source=serp&text=%D0%BA%D0%BE%D1%82%D0%B8%D0%BA%20%D0%B2%20%D0%BE%D0%B4%D1%83%D0%B2%D0%B0%D0%BD%D1%87%D0%B8%D0%BA%D0%B0%D1%85",
+        "https://www.yandex.ru/images/search?img_url=http%3A%2F%2Ffunart.pro%2Fuploads%2Fposts%2F2022-05%2F1653403888_33-funart-pro-p-kotenok-v-oduvanchikakh-krasivo-zhivotnie-40.jpg&lr=43&pos=11&rpt=simage&source=serp&text=%D0%BA%D0%BE%D1%82%D0%B8%D0%BA%20%D0%B2%20%D0%BE%D0%B4%D1%83%D0%B2%D0%B0%D0%BD%D1%87%D0%B8%D0%BA%D0%B0%D1%85",
+        "https://www.yandex.ru/images/search?img_url=http%3A%2F%2Fon-desktop.com%2Fwps%2FAnimals___Cats_Funny_white_cat_in_dandelions_046838_.jpg&lr=43&pos=19&rpt=simage&source=serp&text=%D0%BA%D0%BE%D1%82%D0%B8%D0%BA%20%D0%B2%20%D0%BE%D0%B4%D1%83%D0%B2%D0%B0%D0%BD%D1%87%D0%B8%D0%BA%D0%B0%D1%85",
+        "https://www.yandex.ru/images/search?img_url=http%3A%2F%2Fzastavki.com%2Fpictures%2Foriginals%2F2013%2FAnimals___Cats_Black_and_white_cat_in_dandelions_046796_.jpg&lr=43&p=1&pos=4&rpt=simage&source=serp&text=%D0%BA%D0%BE%D1%82%D0%B8%D0%BA%20%D0%B2%20%D0%BE%D0%B4%D1%83%D0%B2%D0%B0%D0%BD%D1%87%D0%B8%D0%BA%D0%B0%D1%85",
+        "https://www.yandex.ru/images/search?img_url=http%3A%2F%2Ffunart.pro%2Fuploads%2Fposts%2F2022-06%2F1654196598_7-funart-pro-p-kotik-v-oduvanchikakh-zhivotnie-krasivo-fo-7.jpg&lr=43&p=1&pos=12&rpt=simage&source=serp&text=%D0%BA%D0%BE%D1%82%D0%B8%D0%BA%20%D0%B2%20%D0%BE%D0%B4%D1%83%D0%B2%D0%B0%D0%BD%D1%87%D0%B8%D0%BA%D0%B0%D1%85"]
+cats0 = ["Ты котик в одуванчиках)", "Ты молодец!", "У тебя все получится!",
+         "Ты мой одуванчик)", "Ты чудо!", "Даже этот котик не такой милык как ты)",
+         "Улыбайся чаще, тебе очень идет)"]
 logger = logging.getLogger(__name__)
 
 
 async def echo(update, context):
+    await context.bot.sendPhoto(chat_id=update.message.chat.id, photo=
+    choice(cats), caption=choice(cats0))
     user = update.effective_user
     variant = context.user_data['variant']
     if variant and not context.user_data['read'][variant]:
@@ -37,7 +51,7 @@ async def echo(update, context):
                 [
                     InlineKeyboardButton("Каталог историй", callback_data='1'),
                     InlineKeyboardButton('Мои истории', callback_data='5')],
-                [InlineKeyboardButton("Создать историю", url='https://stackoverflow.com/questions/37092909/how-to-send-a-colored-text-message')]]
+                [InlineKeyboardButton("Создать историю", url='http://127.0.0.1:8080/')]]
             reply_markup = InlineKeyboardMarkup(keyboard)
             await update.message.reply_text('Пожалуйста, выберите:', reply_markup=reply_markup)
     else:
@@ -93,7 +107,7 @@ async def no(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [
             InlineKeyboardButton("Каталог историй", callback_data='1'),
             InlineKeyboardButton('Мои истории', callback_data='5')],
-        [InlineKeyboardButton("Создать историю", url='https://stackoverflow.com/questions/37092909/how-to-send-a-colored-text-message')]]
+        [InlineKeyboardButton("Создать историю", url='http://127.0.0.1:8080/')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.message.reply_text('Пожалуйста, выберите:', reply_markup=reply_markup)
 
@@ -106,9 +120,11 @@ async def start(update, context):
         [
             InlineKeyboardButton("Каталог историй", callback_data='1'),
             InlineKeyboardButton('Мои истории', callback_data='5')],
-        [InlineKeyboardButton("Создать историю", url='https://stackoverflow.com/questions/37092909/how-to-send-a-colored-text-message')]]
+        [InlineKeyboardButton("Создать историю", url='http://127.0.0.1:8080/')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text('Пожалуйста, выберите:', reply_markup=reply_markup)
+    await context.bot.sendPhoto(chat_id=update.message.chat.id, photo=
+    choice(cats), caption=choice(cats0))
 
 
 async def my_history(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -136,7 +152,7 @@ async def my_history(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [
             [
                 InlineKeyboardButton("Каталог историй", callback_data='1')],
-            [InlineKeyboardButton("Создать историю", url='https://stackoverflow.com/questions/37092909/how-to-send-a-colored-text-message')]]
+            [InlineKeyboardButton("Создать историю", url='http://127.0.0.1:8080/')]]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.message.reply_text('Пожалуйста, выберите:', reply_markup=reply_markup)
 
@@ -153,9 +169,11 @@ async def catalog(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         if n == 0:
-            await query.message.edit_text(f'*{i[0]}*\n{i[1]}\n*Автор: {i[2]}*', reply_markup=reply_markup, parse_mode='Markdown')
+            await query.message.edit_text(f'*{i[0]}*\n{i[1]}\n*Автор: {i[2]}*', reply_markup=reply_markup,
+                                          parse_mode='Markdown')
         else:
-            await query.message.reply_text(f'*{i[0]}*\n{i[1]}\n*Автор: {i[2]}*', reply_markup=reply_markup, parse_mode='Markdown')
+            await query.message.reply_text(f'*{i[0]}*\n{i[1]}\n*Автор: {i[2]}*', reply_markup=reply_markup,
+                                           parse_mode='Markdown')
         n += 1
 
 
@@ -167,13 +185,13 @@ async def close(update, context):
         [
             InlineKeyboardButton("Каталог историй", callback_data='1'),
             InlineKeyboardButton('Мои истории', callback_data='5')],
-        [InlineKeyboardButton("Создать историю", url='https://stackoverflow.com/questions/37092909/how-to-send-a-colored-text-message')]]
+        [InlineKeyboardButton("Создать историю", url='')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text('Пожалуйста, выберите:', reply_markup=reply_markup)
 
 
 def main():
-    application = Application.builder().token('6218918952:AAGm272k6KKNHFb-YCCz8cBckir4MFGEoek').build()
+    application = Application.builder().token('6296614569:AAGKLAKOFw5jNNwHE4bv5EOp0kUZpzJcYag').build()
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CallbackQueryHandler(catalog, pattern='1'))
     application.add_handler(CallbackQueryHandler(start_read, pattern='2'))

@@ -3,12 +3,10 @@ import random
 import sys
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget, QApplication, QPushButton, QLineEdit, QListWidgetItem, QMainWindow, QMessageBox
-from PyQt5.uic.properties import QtWidgets
 from webdav3.client import Client
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.mime.image import MIMEImage
 
 
 class Password(QMainWindow):
@@ -120,7 +118,7 @@ class Check(QMainWindow):
         self.client.upload_sync(remote_path="history.json", local_path='history.json')
         self.client.clean(self.my_file)
         server = smtplib.SMTP_SSL(self.data["email"], 25)
-        server.login('georgpyanov07@mail.ru', 'sash@14062007')
+        server.login('georgpyanov07@mail.ru', 'CypB0tPdV6ruDiX9w7p7')
         msg = MIMEMultipart()
         msg['From'] = 'georgpyanov07@mail.ru'
         msg['To'] = self.data["email"]
@@ -137,7 +135,7 @@ class Check(QMainWindow):
     def reject(self):
         self.client.clean(self.my_file)
         server = smtplib.SMTP_SSL(self.data["email"], 25)
-        server.login('georgpyanov07@mail.ru', 'sash@14062007')
+        server.login('georgpyanov07@mail.ru', 'CypB0tPdV6ruDiX9w7p7')
         msg = MIMEMultipart()
         msg['From'] = 'georgpyanov07@mail.ru'
         msg['To'] = self.data["email"]

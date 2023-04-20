@@ -1,6 +1,5 @@
 import json
 import random
-
 from flask import Flask, url_for, render_template, redirect, request
 from webdav3.client import Client
 
