@@ -51,7 +51,7 @@ async def echo(update, context):
                 [
                     InlineKeyboardButton("Каталог историй", callback_data='1'),
                     InlineKeyboardButton('Мои истории', callback_data='5')],
-                [InlineKeyboardButton("Создать историю", url='http://127.0.0.1:8080/')]]
+                [InlineKeyboardButton("Создать историю", url='https://georgiipyanov14.pythonanywhere.com/')]]
             reply_markup = InlineKeyboardMarkup(keyboard)
             await update.message.reply_text('Пожалуйста, выберите:', reply_markup=reply_markup)
     else:
@@ -107,7 +107,7 @@ async def no(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [
             InlineKeyboardButton("Каталог историй", callback_data='1'),
             InlineKeyboardButton('Мои истории', callback_data='5')],
-        [InlineKeyboardButton("Создать историю", url='http://127.0.0.1:8080/')]]
+        [InlineKeyboardButton("Создать историю", url='https://georgiipyanov14.pythonanywhere.com/')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.message.reply_text('Пожалуйста, выберите:', reply_markup=reply_markup)
 
@@ -116,11 +116,12 @@ async def start(update, context):
     if 'history' not in context.user_data:
         context.user_data['history'] = {}
         context.user_data['read'] = {}
+        context.user_data['variant'] = ''
     keyboard = [
         [
             InlineKeyboardButton("Каталог историй", callback_data='1'),
             InlineKeyboardButton('Мои истории', callback_data='5')],
-        [InlineKeyboardButton("Создать историю", url='http://127.0.0.1:8080/')]]
+        [InlineKeyboardButton("Создать историю", url='https://georgiipyanov14.pythonanywhere.com/')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text('Пожалуйста, выберите:', reply_markup=reply_markup)
     await context.bot.sendPhoto(chat_id=update.message.chat.id, photo=
@@ -152,7 +153,7 @@ async def my_history(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [
             [
                 InlineKeyboardButton("Каталог историй", callback_data='1')],
-            [InlineKeyboardButton("Создать историю", url='http://127.0.0.1:8080/')]]
+            [InlineKeyboardButton("Создать историю", url='https://georgiipyanov14.pythonanywhere.com/')]]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.message.reply_text('Пожалуйста, выберите:', reply_markup=reply_markup)
 

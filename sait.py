@@ -13,8 +13,6 @@ def sample_file_upload():
         name = request.form.get('name')
         email = request.form.get('email')
         r = {'name': name, 'email': email}
-        with open('data.json', 'w', encoding='utf8') as cat_file:
-            json.dump(r, cat_file)
         return redirect('/hero')
     return render_template('form.html')
 

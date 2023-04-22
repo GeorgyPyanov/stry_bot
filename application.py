@@ -70,6 +70,10 @@ class Main(QMainWindow):
         else:
             self.check_form = Check()
             self.check_form.show()
+            self.client.download_sync(remote_path="history.json", local_path='history.json')
+            with open('history.json', encoding="utf8") as cat_file:
+                data = json.load(cat_file)
+            self.label.setText(f'Количество историй: {len(data)}')
 
 
 class Check(QMainWindow):
@@ -102,7 +106,7 @@ class Check(QMainWindow):
     def accept(self):
         f = open("example.txt", 'w')
         for i in self.data["text"]:
-            f.write(f'{i[1]}/{i[0]}')
+            f.write(f'{i[1]}/{i[0]}\n')
         f.close()
         a = list('0123456789')
         random.shuffle(a)
@@ -117,36 +121,70 @@ class Check(QMainWindow):
             json.dump(data, cat_file)
         self.client.upload_sync(remote_path="history.json", local_path='history.json')
         self.client.clean(self.my_file)
-        server = smtplib.SMTP_SSL(self.data["email"], 25)
-        server.login('georgpyanov07@mail.ru', 'CypB0tPdV6ruDiX9w7p7')
-        msg = MIMEMultipart()
-        msg['From'] = 'georgpyanov07@mail.ru'
-        msg['To'] = self.data["email"]
-        msg['Subject'] = 'Sry_bog_bot'
-        body = f'Добрый день! Уважаемый(ая) {self.data["name"]}, благодарим вас за историю, которая успешно прошла ' \
-               f'модерацию и будет опубликована в ближайшее время.' \
-               f'Очень ждем ваши работы еще! С уважением, команда Sry_bog_bot ' \
-               f'Примечание: {self.lineEdit.text()}'
-        msg.attach(MIMEText(body, 'plain'))
-        server.send_message(msg)
-        server.quit()
+        user = "georgpyanov07@mail.ru"
+        passwd = "CypB0tPdV6ruDiX9w7p7"
+        server = "smtp.mail.ru"
+        port = 587
+        subject = 'Sry_bog_bot'
+        to = self.data["email"]
+        charset = 'Content-Type: text/plain; charset=utf-8'
+        mime = 'MIME-Version: 1.0'
+        haha = False
+        for i in ['полина', 'наташа', 'чулпан', 'юлия']:
+            if i in self.data["name"].lower():
+                haha = True
+        if haha:
+            text = f'Добрый день! Уважаемый(ая) {self.data["name"]}, благодарим вас за историю, которая успешно прошла ' \
+                   f'модерацию и будет опубликована в ближайшее время. А ЕЩЕ У ВАС САМОЕ КРАСИВОЕ ИМЯ НА ПЛАНЕТЕ))))' \
+                   f'Очень ждем ваши работы еще! С уважением, команда Sry_bog_bot ' \
+                   f'Примечание: {self.lineEdit.text()}'
+        else:
+            text = f'Добрый день! Уважаемый(ая) {self.data["name"]}, благодарим вас за историю, которая успешно прошла ' \
+                   f'модерацию и будет опубликована в ближайшее время.' \
+                   f'Очень ждем ваши работы еще! С уважением, команда Sry_bog_bot ' \
+                   f'Примечание: {self.lineEdit.text()}'
+        body = "\r\n".join((f"From: {user}", f"To: {to}",
+                            f"Subject: {subject}", mime, charset, "", text))
+        try:
+            smtp = smtplib.SMTP(server, port)
+            smtp.starttls()
+            smtp.ehlo()
+            smtp.login(user, passwd)
+            smtp.sendmail(user, to, body.encode('utf-8'))
+        except smtplib.SMTPException as err:
+            print('Что - то пошло не так...')
+            raise err
+        finally:
+            smtp.quit()
         self.close()
 
     def reject(self):
         self.client.clean(self.my_file)
-        server = smtplib.SMTP_SSL(self.data["email"], 25)
-        server.login('georgpyanov07@mail.ru', 'CypB0tPdV6ruDiX9w7p7')
-        msg = MIMEMultipart()
-        msg['From'] = 'georgpyanov07@mail.ru'
-        msg['To'] = self.data["email"]
-        msg['Subject'] = 'Sry_bog_bot'
-        body = f"Добрый день! Уважаемый(ая) {self.data['name']},благодарим вас за историю, которая, к сожалению, не прошла" \
+        user = "georgpyanov07@mail.ru"
+        passwd = "CypB0tPdV6ruDiX9w7p7"
+        server = "smtp.mail.ru"
+        port = 587
+        subject = 'Sry_bog_bot'
+        to = self.data["email"]
+        charset = 'Content-Type: text/plain; charset=utf-8'
+        mime = 'MIME-Version: 1.0'
+        text = f"Добрый день! Уважаемый(ая) {self.data['name']},благодарим вас за историю, которая, к сожалению, не прошла" \
                f"модерацию." \
                f"Но это не повод расстраиваться, мы очень ждем ваши работы еще! С уважением, команда Sry_bog_bot " \
                f"Примечание: {self.lineEdit.text()}"
-        msg.attach(MIMEText(body, 'plain'))
-        server.send_message(msg)
-        server.quit()
+        body = "\r\n".join((f"From: {user}", f"To: {to}",
+                            f"Subject: {subject}", mime, charset, "", text))
+        try:
+            smtp = smtplib.SMTP(server, port)
+            smtp.starttls()
+            smtp.ehlo()
+            smtp.login(user, passwd)
+            smtp.sendmail(user, to, body.encode('utf-8'))
+        except smtplib.SMTPException as err:
+            print('Что - то пошло не так...')
+            raise err
+        finally:
+            smtp.quit()
         self.close()
 
 
