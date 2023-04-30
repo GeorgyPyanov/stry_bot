@@ -1,9 +1,8 @@
 import logging
+import sqlite3
 from random import choice
 from urllib.parse import urlparse, urljoin
-
 import requests
-from json import loads
 from bs4 import BeautifulSoup
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, ReplyKeyboardMarkup, KeyboardButton, \
     ReplyKeyboardRemove
@@ -14,6 +13,8 @@ from mail import anons_history, take_history
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG
 )
+con = sqlite3.connect("users.db")
+cur = con.cursor()
 
 
 def is_valid(url):
@@ -132,6 +133,13 @@ async def no(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def start(update, context):
+    k = f"""SELECT * FROM users WHERE user_name = '{update.message.from_user.username}'"""
+    result = cur.execute(k).fetchall()
+    if not result:
+        cur.execute("""INSERT INTO users VALUES(?, ?, ?)""", (update.message.from_user.id,
+                                                              update.message.from_user.username,
+                                                              f"{update.message.from_user.first_name} {update.message.from_user.last_name}"))
+        con.commit()
     if 'history' not in context.user_data:
         context.user_data['history'] = {}
         context.user_data['read'] = {}
