@@ -1,24 +1,43 @@
 import logging
 from random import choice
+from urllib.parse import urlparse, urljoin
 
+import requests
+from json import loads
+from bs4 import BeautifulSoup
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, ReplyKeyboardMarkup, KeyboardButton, \
     ReplyKeyboardRemove
 from telegram.ext import Application, MessageHandler, filters, ContextTypes, CallbackQueryHandler, ConversationHandler
 from telegram.ext import CommandHandler
-
 from mail import anons_history, take_history
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG
 )
-cats = ["https://www.yandex.ru/images/search?from=tabbar&img_url=http%3A%2F%2Fimg-fotki.yandex.ru%2Fget%2F9164"
-        "%2F116075328.4d%2F0_d4345_96ec43ee_XL.jpg&lr=11129&pos=3&rpt=simage&text=%D0%BA%D0%BE%D1%82%D0%B8%D0%BA%20%D0%BE"
-        "%D0%B4%D1%83%D0%B2%D0%B0%D0%BD%D1%87%D0%B8%D0%BA%D0%B8",
-        "https://www.yandex.ru/images/search?img_url=http%3A%2F%2Ffunart.pro%2Fuploads%2Fposts%2F2022-06%2F1654196546_17-funart-pro-p-kotik-v-oduvanchikakh-zhivotnie-krasivo-fo-19.jpg&lr=43&pos=10&rpt=simage&source=serp&text=%D0%BA%D0%BE%D1%82%D0%B8%D0%BA%20%D0%B2%20%D0%BE%D0%B4%D1%83%D0%B2%D0%B0%D0%BD%D1%87%D0%B8%D0%BA%D0%B0%D1%85",
-        "https://www.yandex.ru/images/search?img_url=http%3A%2F%2Ffunart.pro%2Fuploads%2Fposts%2F2022-05%2F1653403888_33-funart-pro-p-kotenok-v-oduvanchikakh-krasivo-zhivotnie-40.jpg&lr=43&pos=11&rpt=simage&source=serp&text=%D0%BA%D0%BE%D1%82%D0%B8%D0%BA%20%D0%B2%20%D0%BE%D0%B4%D1%83%D0%B2%D0%B0%D0%BD%D1%87%D0%B8%D0%BA%D0%B0%D1%85",
-        "https://www.yandex.ru/images/search?img_url=http%3A%2F%2Fon-desktop.com%2Fwps%2FAnimals___Cats_Funny_white_cat_in_dandelions_046838_.jpg&lr=43&pos=19&rpt=simage&source=serp&text=%D0%BA%D0%BE%D1%82%D0%B8%D0%BA%20%D0%B2%20%D0%BE%D0%B4%D1%83%D0%B2%D0%B0%D0%BD%D1%87%D0%B8%D0%BA%D0%B0%D1%85",
-        "https://www.yandex.ru/images/search?img_url=http%3A%2F%2Fzastavki.com%2Fpictures%2Foriginals%2F2013%2FAnimals___Cats_Black_and_white_cat_in_dandelions_046796_.jpg&lr=43&p=1&pos=4&rpt=simage&source=serp&text=%D0%BA%D0%BE%D1%82%D0%B8%D0%BA%20%D0%B2%20%D0%BE%D0%B4%D1%83%D0%B2%D0%B0%D0%BD%D1%87%D0%B8%D0%BA%D0%B0%D1%85",
-        "https://www.yandex.ru/images/search?img_url=http%3A%2F%2Ffunart.pro%2Fuploads%2Fposts%2F2022-06%2F1654196598_7-funart-pro-p-kotik-v-oduvanchikakh-zhivotnie-krasivo-fo-7.jpg&lr=43&p=1&pos=12&rpt=simage&source=serp&text=%D0%BA%D0%BE%D1%82%D0%B8%D0%BA%20%D0%B2%20%D0%BE%D0%B4%D1%83%D0%B2%D0%B0%D0%BD%D1%87%D0%B8%D0%BA%D0%B0%D1%85"]
+
+
+def is_valid(url):
+    parsed = urlparse(url)
+    return bool(parsed.netloc) and bool(parsed.scheme)
+
+
+def get_all_images(url):
+    urls = []
+    html_page = requests.get(url, headers={"User-Agent":"Mozilla/5.0"})
+    html = BeautifulSoup(html_page.content, "html.parser")
+    for img in html.find_all("img"):
+        img_url = img.attrs.get("src")
+        if not img_url:
+            continue
+        img_url = urljoin(url, img_url)
+        if is_valid(img_url):
+            urls.append(img_url)
+    return urls
+
+
+cats = get_all_images("https://yandex.ru/images/search?text=котик в одуванчиках")
+
+
 cats0 = ["Ты котик в одуванчиках)", "Ты молодец!", "У тебя все получится!",
          "Ты мой одуванчик)", "Ты чудо!", "Даже этот котик не такой милык как ты)",
          "Улыбайся чаще, тебе очень идет)"]
